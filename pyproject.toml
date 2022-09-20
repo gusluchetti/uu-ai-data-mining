@@ -9,6 +9,7 @@ packages = [{include = "uu_data_mining"}]
 [tool.poetry.dependencies]
 python = "^3.10"
 numpy = "^1.23.3"
+pandas = "^1.5.0"
 
 
 [build-system]
