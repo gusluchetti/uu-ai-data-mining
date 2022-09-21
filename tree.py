@@ -18,7 +18,9 @@ def tree_pred():
     return "tree"
 
 
-x = [[1], [2]]
-y = [0, 1]
+df = load_dataset("data.csv")
+x = [[]]
+y = []
 
-load_dataset("data.csv")
+print(x, y, "\n")
+print(df)
