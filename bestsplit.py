@@ -20,13 +20,12 @@ def bestsplit(x, y):
         gini_higher = gini_impurity(higher)
 
         freq_lower = len(lower)/len(x)
-        freq_higher = len(higher)/len(x)
-        impr_red = 1/4 - (freq_lower*gini_lower) - (freq_higher*gini_higher)
+        impr_red = 0.25 - (freq_lower*gini_lower) - ((1-freq_lower)*gini_higher)
 
         print(f"Cur. Split Impurity Reduction = {impr_red}\n")
         if impr_red > best_red:
             best_red = impr_red
             best_split = c
-        print(f"Best split {best_split} had {impr_red} impurity reduction\n")
 
+        print(f"Best split {best_split} has {best_red} impurity reduction\n")
     return best_split
