@@ -1,11 +1,15 @@
 import numpy as np
+import math
 
 
-# get uniques
-# count frequency of each unique
-# compute gini
-# profit?
-def gini_impurity(array: np.ndarray):
+# max possible impurity is related to the number of unique classes/values
+def get_max_impurity(array):
+    """array of unique elements"""
+    length = len(array)
+    return math.pow(1/length, length)
+
+
+def gini_impurity(array):
     # P(i) * (1 - P(i))
     """ updated version of gini impurity to handle separation
     between a number N of different classes
@@ -14,13 +18,18 @@ def gini_impurity(array: np.ndarray):
     args: np array of N classes
     returns: weighted gini_index of node
     """
-    print(array)
+    print(f"Node being evaluted -> {array}")
     length = len(array)
-    if length == 1:
-        return 0.0
-    count_0 = np.count_nonzero(array == 0)
-    p0 = count_0/length
-    p1 = 1 - count_0/length
-    gini = p0 * p1
-    print(f"Gini = {gini}")
+    uniques = np.unique(array)
+    print(f"Classes -> {uniques}")
+    freqs = np.array([])
+    for label in uniques:
+        count = np.where(array == label)[0].size
+        freq_p = count/length
+        freqs = np.append(freqs, [freq_p])
+    print(f"Freq. for each class -> {freqs}")
+    gini = np.prod(freqs)
+    if freqs[0] == 1:  # for single element nodes
+        gini = 0.0
+    print(f"Gini = {gini}\n")
     return gini
