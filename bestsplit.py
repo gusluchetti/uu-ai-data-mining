@@ -4,12 +4,20 @@ from gini import gini_impurity, get_max_impurity
 from itertools import combinations
 
 
-# TODO: throw repeated code lines into separate function
-# (left and right and beyond)
+# TODO: any way of getting the setup for both best splits into functions?
+def get_impr_red(left, right, max_impr):
+    """ Calculate impurity reduction based on two leaf nodes and max impurity """
+    gini_left = gini_impurity(left)
+    gini_right = gini_impurity(right)
+    freq_l = len(left)/(len(left)+len(right))
+    freq_r = 1 - freq_l
+    print(gini_left, gini_right, freq_l, freq_r)
+    return max_impr - ((freq_l*gini_left) + ((freq_r)*gini_right))
 
 
-# bestsplit for numerical values
 def get_bestsplit(x, y):
+    """ Get best split for an array of numerical features and class labels """
+    max_impr = get_max_impurity(np.unique(y))
     best_red = float('-inf')
     best_split = None
     x_sorted = np.sort(np.unique(x))
@@ -20,16 +28,11 @@ def get_bestsplit(x, y):
 
     for split in x_splitpoints:
         print(f"Split -> {split}")
-
         left, right = y[x < split], y[x >= split]
-        gini_left = gini_impurity(left)
-        gini_right = gini_impurity(right)
-        freq_l = len(left)/len(x)
-        freq_r = 1 - freq_l
-        print(gini_left, gini_right, freq_l, freq_r)
 
-        impr_red = get_max_impurity(np.unique(y)) - ((freq_l*gini_left) + ((freq_r)*gini_right))
+        impr_red = get_impr_red(left, right, max_impr)
         print(f"Cur. Impurity Reduction = {impr_red}\n")
+
         if impr_red > best_red:
             best_red = impr_red
             best_split = split
@@ -38,15 +41,14 @@ def get_bestsplit(x, y):
     return best_split
 
 
-# bestsplit for categorical values
 def get_bestsplit_cat(x, y):
+    """ Get best split for an array of categorical features and class labels """
+    max_impr = get_max_impurity(np.unique(y))
     best_red = float('-inf')
     best_split = None
     x_uniques = np.unique(x)
     length = x_uniques.size
-    # 2 to the power of L-1 minus 1 where L is unique categorical variables
-    num_splits = pow(2, length - 1) - 1
-    # should finish with a list of all splits i.e. [a, b, c, d ,ab, ac, ad]
+    num_splits = pow(2, length - 1) - 1  # 2^L-1 -1 (L = unique cat vars)
     all_splits = []
 
     x_as_string = ""
@@ -71,14 +73,10 @@ def get_bestsplit_cat(x, y):
                 left = np.append(left, y[i])
             else:
                 right = np.append(right, y[i])
-        gini_left = gini_impurity(left)
-        gini_right = gini_impurity(right)
-        freq_l = len(left)/len(x)
-        freq_r = 1 - freq_l
-        print(gini_left, gini_right, freq_l, freq_r)
 
-        impr_red = get_max_impurity(np.unique(y)) - ((freq_l*gini_left) + ((freq_r)*gini_right))
+        impr_red = get_impr_red(left, right, max_impr)
         print(f"Cur. Impurity Reduction = {impr_red}\n")
+
         if impr_red > best_red:
             best_red = impr_red
             best_split = split
