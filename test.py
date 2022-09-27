@@ -1,26 +1,24 @@
 import bestsplit
 import gini
 import numpy as np
-from math import pow
 
-# test suite for different functions being used
+
+def test_max_impurity():
+    # asserting odd char array with max impurity
+    array = np.array(['A', 'B', 'C'])
+    expected_gini = gini.get_max_impurity(array)
+    assert gini.gini_impurity(array) == expected_gini
+
+
 def test_gini():
     # asserting binary array with given answer
     array = np.array([1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0])  # 4 / 7
     expected_gini = 0.23140495867768596 * 2
-    print(f"expected gini -> {expected_gini}")
     assert gini.gini_impurity(array) == expected_gini
 
     # asserting char array with max impurity
     array = np.array([0, 1])
     expected_gini = 1/2 * 1/2 * 2  # 1/2 * 1/2
-    print(f"expected gini -> {expected_gini}")
-    assert gini.gini_impurity(array) == expected_gini
-
-    # asserting odd char array with max impurity
-    array = np.array(['A', 'B', 'C'])
-    expected_gini = 1 - 3*(pow(1/3, 2))
-    print(f"expected gini -> {expected_gini}")
     assert gini.gini_impurity(array) == expected_gini
 
 
