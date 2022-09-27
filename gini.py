@@ -6,11 +6,11 @@ import math
 def get_max_impurity(array):
     """array of unique elements"""
     length = len(array)
-    return math.pow(1/length, length)
+    return 1-length*(math.pow(1/length, 2))
 
 
 def gini_impurity(array):
-    # P(i) * (1 - P(i))
+    # 1 - sum (p)^2
     """ updated version of gini impurity to handle separation
     between a number N of different classes
     classe could either be numbers or chars
@@ -28,7 +28,10 @@ def gini_impurity(array):
         freq_p = count/length
         freqs = np.append(freqs, [freq_p])
     print(f"Freq. for each class -> {freqs}")
-    gini = np.prod(freqs)
+    sum = 0
+    for freq in freqs:
+        sum += math.pow(freq, 2)
+    gini = 1 - sum
     if freqs[0] == 1:  # for single element nodes
         gini = 0.0
     print(f"Gini = {gini}\n")
