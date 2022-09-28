@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import gini
 import random
 
 
@@ -234,25 +235,9 @@ def calculate_impurity_reduction(y_parent, y_left, y_right) -> float:
     Returns
         (float) Amount of impurity reduction
     """
-    im_parent = calculate_gini_impurity(y_parent)
-    im_left = calculate_gini_impurity(y_left)
-    im_right = calculate_gini_impurity(y_right)
+    im_parent = gini.gini_impurity(y_parent)
+    im_left = gini.gini_impurity(y_left)
+    im_right = gini.gini_impurity(y_right)
     w_left = len(y_left) / len(y_parent)
     w_right = len(y_right) / len(y_parent)
     return im_parent - (w_left * im_left) - (w_right * im_right)
-
-
-def calculate_gini_impurity(arr: list) -> float:
-    """Calculates the Gini impurity of a single node.
-
-    :param arr: a list of class labels (1-dimensional array). It is assumed that the labels are only 0 and 1.
-    :return: gini impurity number.
-    """
-    unique_vals, count_vals = np.unique(arr, return_counts=True)
-    if len(unique_vals) == 1:
-        return 0
-    else:
-        gini = 1
-        for i in range(len(unique_vals)):
-            gini = gini * (count_vals[i] / len(arr))
-        return gini
