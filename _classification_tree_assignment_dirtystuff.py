@@ -248,4 +248,4 @@ def calculate_gini_impurity(arr: list) -> float:
         gini = 1
         for i in range(len(unique_vals)):
             gini = gini * (count_vals[i] / len(arr))
-        return giniimport numpy as np
+        return gini
