@@ -47,12 +47,17 @@ def test_bestsplit_cat():
     expected_best = ['c']
     assert bestsplit.get_bestsplit_cat(x, y) == expected_best
 
+
 def test_tree_grow():
     # validate tree with credit data
     nmin = 2
     minleaf = 1
-    nfeat =
+    nfeat = 5
 
+    x = np.array([[]])
+    y = np.array([])
 
-    tree_ = tree.tree_grow(x, y, nmin, minleaft, nfeat)
+    df = tree.load_dataset('data.csv')
+    print(df)
+    tree_ = tree.tree_grow(x, y, nmin, minleaf, nfeat)
     print(tree_)
