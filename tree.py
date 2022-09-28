@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import random
 
 
@@ -9,6 +10,12 @@ class Node:
         self.split_col = None
         self.split_point = None
         self.leaf_class = None
+
+
+def load_dataset(path):
+    df = pd.read_csv(path)
+    print(f"Loaded dataframe.\n {df.info()}\n")
+    return df
 
 
 def tree_grow(x, y, nmin, minleaf, nfeat) -> Node:
