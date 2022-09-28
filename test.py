@@ -1,5 +1,6 @@
 import bestsplit
 import gini
+import tree
 import numpy as np
 
 
@@ -45,3 +46,13 @@ def test_bestsplit_cat():
     assert len(x) == len(y)
     expected_best = ['c']
     assert bestsplit.get_bestsplit_cat(x, y) == expected_best
+
+def test_tree_grow():
+    # validate tree with credit data
+    nmin = 2
+    minleaf = 1
+    nfeat =
+
+
+    tree_ = tree.tree_grow(x, y, nmin, minleaft, nfeat)
+    print(tree_)
