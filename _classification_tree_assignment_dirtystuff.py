@@ -111,7 +111,7 @@ def predict(instance, node):
 
 
 def traverse(node):
-    print(f"============== NODE")
+    print("============== NODE")
     print(f"Split column {node.split_col}")
     print(f"Split point {node.split_point}")
     print(f"Leaf class {node.leaf_class}")
@@ -213,7 +213,7 @@ def find_leaf_class(matrix):
     mat = np.array(matrix)
     vals, occurrences = np.unique(mat[:, len(mat[0])-1], return_counts=True)
     # dic = dict(zip(occurrences, vals))
-    dic = { o: v for o, v in zip(occurrences, vals) }
+    dic = {o: v for o, v in zip(occurrences, vals)}
     return dic[occurrences.max()]
 
 
