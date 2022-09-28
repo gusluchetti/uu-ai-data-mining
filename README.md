@@ -1,7 +1,7 @@
 # uu-ai-data-mining
 Repository for the practical assignments expected for the Data Mining Elective @ Utrecht University, 1st Period. 
 
-## Build Instructoins:
+## Build Instructions:
 We recommend using pyenv and poetry for virtual env management and package dependency management, respectively. 
 Assuming those requirements are met and you're inside the repository's folder:
 ```
