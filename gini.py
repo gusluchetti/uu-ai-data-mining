@@ -18,7 +18,7 @@ def gini_impurity(array):
     args: np array of N classes
     returns: weighted gini_index of node
     """
-    print(f"Node being evaluted -> {array}")
+    print(f"Node being evaluated -> {array}")
     length = len(array)
     uniques = np.unique(array)
     print(f"Classes -> {uniques}")

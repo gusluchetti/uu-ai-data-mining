@@ -29,7 +29,7 @@ def tree_grow(x, y, nmin, minleaf, nfeat) -> Node:
         int minleaf: minimum number of observations in a leaf-node
         int nfeat: number of features to be considered for each split
     Returns
-        (Tree) the Classification Tree object
+        (Node) the root node of a Classification Tree
     """
     _y = np.array(y).reshape(len(x), 1)
     matrix = np.hstack((x, _y))
@@ -44,7 +44,7 @@ def tree_pred(x, tr) -> list:
 
     Parameters
         x (list): 2-dimensional array of numerical values
-        tr (Tree): the Tree model
+        tr (Node): the root node of a Tree model
     Returns:
         (list) A list of class labels
     """
