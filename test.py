@@ -3,6 +3,7 @@ import gini
 import tree
 import numpy as np
 
+testing = True
 
 def test_max_impurity():
     # asserting odd char array with max impurity
@@ -55,11 +56,18 @@ def test_tree_grow():
     nfeat = 5
 
     credit_data = np.genfromtxt('credit.txt', delimiter=',', skip_header=True)
-    print(credit_data)
-    # df = tree.load_dataset('data.csv')
+    #print(credit_data)
+    #df = tree.load_dataset('data.csv')
     last = len(credit_data[0]) - 1
     x = credit_data[:, 0:last]
     y = credit_data[:, last]
 
     root = tree.tree_grow(x, y, nmin, minleaf, nfeat)
     tree.traverse(root)
+
+if testing:
+    test_max_impurity()
+    test_gini()
+    test_bestsplit_num()
+    test_bestsplit_cat()
+    test_tree_grow()

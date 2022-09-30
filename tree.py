@@ -3,6 +3,7 @@ import pandas as pd
 import gini
 import random
 
+printing_mode = True
 
 class Node:
     def __init__(self, matrix):
@@ -15,7 +16,8 @@ class Node:
 
 def load_dataset(path):
     df = pd.read_csv(path)
-    print(f"Loaded dataframe.\n {df.info()}\n")
+    if printing_mode:
+        print(f"Loaded dataframe.\n {df.info()}\n")
     return df
 
 
@@ -120,9 +122,12 @@ def predict(instance, node):
 
 def traverse(node):
     print(f"============== NODE")
-    print(f"Split column {node.split_col}")
-    print(f"Split point {node.split_point}")
-    print(f"Leaf class {node.leaf_class}")
+    
+    if node.leaf_class == None:    
+        print(f"Split column {node.split_col}")
+        print(f"Split point {node.split_point}")
+    else:
+        print(f"Leaf class {node.leaf_class}")
 
     if len(node.children) > 0:
         for i in range(len(node.children)):
