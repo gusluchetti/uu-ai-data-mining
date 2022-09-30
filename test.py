@@ -49,7 +49,7 @@ def test_bestsplit_cat():
     assert bestsplit.get_bestsplit_cat(x, y) == expected_best
 
 
-def test_tree_grow():
+def test_tree_grow(printing = True):
     # validate tree with credit data
     nmin = 2
     minleaf = 1
@@ -59,17 +59,52 @@ def test_tree_grow():
    
     x,y = tree.load_dataset_txt('credit.txt')
     root = tree.tree_grow(x, y, nmin, minleaf, nfeat)
-    tree.traverse(root)
+    if printing:
+        tree.traverse(root)
     
     # print("     ")
    
     # x,y = tree.load_dataset_csv('data.csv',y_name='class')
     # root = tree.tree_grow(x, y, nmin, minleaf, nfeat)
+    # if printing:
+    #     tree.traverse(root)
+    
+def test_tree_pred(printing = False):
+    nmin = 20
+    minleaf = 5
+    
+    x,y = tree.load_dataset_txt('pima.txt')
+    nfeat = len(x[0])
+    
+    root = tree.tree_grow(x, y, nmin, minleaf, nfeat)
     # tree.traverse(root)
+    
+    confusion_matrix = np.zeros((2,2))
+
+    predictions = tree.tree_pred(x, root)
+    for i in range(len(x)):
+        
+        if predictions[i] == 0:
+            if predictions[i] == y[i]:
+                confusion_matrix[0][0] += 1
+            else:
+                confusion_matrix[1][0] += 1
+        else:
+            if predictions[i] == y[i]:
+                confusion_matrix[1][1] += 1
+            else:
+                confusion_matrix[0][1] += 1
+        
+        # you can technically write it like this in one line but it would be unreadable:
+        #  confusion_matrix[int(predictions[i]==y[i])][predictions[i]] += 1
+    if printing:
+        print(confusion_matrix)
+        
 
 if testing:
     test_max_impurity()
     test_gini()
     test_bestsplit_num()
     test_bestsplit_cat()
-    test_tree_grow()
+    test_tree_grow(printing = False)
+    test_tree_pred(printing = True)
