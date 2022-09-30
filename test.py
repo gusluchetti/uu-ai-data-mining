@@ -55,12 +55,20 @@ def test_tree_grow():
     minleaf = 1
     nfeat = 5
 
-    credit_data = np.genfromtxt('credit.txt', delimiter=',', skip_header=True)
-    #print(credit_data)
-    #df = tree.load_dataset('data.csv')
-    last = len(credit_data[0]) - 1
-    x = credit_data[:, 0:last]
-    y = credit_data[:, last]
+    # this is taking directly from txt:
+    
+    # credit_data = np.genfromtxt('credit.txt', delimiter=',', skip_header=True)
+    # last = len(credit_data[0]) - 1
+    # #print(credit_data)
+    # x = credit_data[:, 0:last]
+    # y = credit_data[:, last]
+    # root = tree.tree_grow(x, y, nmin, minleaf, nfeat)
+    # tree.traverse(root)
+    
+    # print("     ")
+
+    
+    x,y = tree.load_dataset('data.csv',y_name='class')
 
     root = tree.tree_grow(x, y, nmin, minleaf, nfeat)
     tree.traverse(root)

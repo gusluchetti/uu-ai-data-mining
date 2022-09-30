@@ -3,7 +3,7 @@ import pandas as pd
 import gini
 import random
 
-printing_mode = True
+printing_mode = False
 
 class Node:
     def __init__(self, matrix):
@@ -14,11 +14,15 @@ class Node:
         self.leaf_class = None
 
 
-def load_dataset(path):
+def load_dataset(path, y_name):
     df = pd.read_csv(path)
     if printing_mode:
         print(f"Loaded dataframe.\n {df.info()}\n")
-    return df
+        
+    y = df[y_name]
+    x = df.drop(y_name, axis = 1)
+    
+    return x,y
 
 
 def tree_grow(x, y, nmin, minleaf, nfeat) -> Node:
