@@ -14,7 +14,15 @@ class Node:
         self.leaf_class = None
 
 
-def load_dataset(path, y_name):
+def load_dataset_txt(path):
+    data = np.genfromtxt(path, delimiter=',', skip_header=False)
+    last = len(data[0]) - 1
+    x = data[:, 0:last]
+    y = data[:, last]
+    
+    return x,y
+
+def load_dataset_csv(path, y_name):
     df = pd.read_csv(path)
     if printing_mode:
         print(f"Loaded dataframe.\n {df.info()}\n")
