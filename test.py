@@ -2,6 +2,7 @@ import bestsplit
 import gini
 import tree
 import numpy as np
+import time
 
 testing = True
 
@@ -55,12 +56,20 @@ def test_tree_grow(printing = True):
     minleaf = 1
     nfeat = 5
 
- 
+    start_time = time.perf_counter()
    
     x,y = tree.load_dataset_txt('credit.txt')
     root = tree.tree_grow(x, y, nmin, minleaf, nfeat)
+    
+    end_time = time.perf_counter()
+
     if printing:
         tree.traverse(root)
+    
+    grow_time = end_time - start_time
+    
+    if printing:
+        print(grow_time)
     
     # print("     ")
    
@@ -73,11 +82,15 @@ def test_tree_pred(printing = False):
     nmin = 20
     minleaf = 5
     
+    start_time_total = time.perf_counter()
+
     x,y = tree.load_dataset_txt('pima.txt')
     nfeat = len(x[0])
-    
+
+    start_time_grow = time.perf_counter()
     root = tree.tree_grow(x, y, nmin, minleaf, nfeat)
     # tree.traverse(root)
+    end_time_grow = time.perf_counter()
     
     confusion_matrix = np.zeros((2,2))
 
@@ -85,14 +98,61 @@ def test_tree_pred(printing = False):
 
     matrix = tree.confusion_matrix(x,y,predictions)
 
+    assert matrix[0][0] < 454
+    assert matrix[0][0] > 434
+    assert matrix[0][1] < 66
+    assert matrix[0][1] > 46
+    assert matrix[1][0] < 64
+    assert matrix[1][0] > 44
+    assert matrix[1][1] < 224
+    assert matrix[1][1] > 204
+
+    end_time_total = time.perf_counter()
+
     if printing:
         print(matrix)
-        
+        print("grow time:",end_time_grow-start_time_grow)
+        print("total time:",end_time_total - start_time_total)
+
+def test_tree_grow_b(printing = False):
+
+    start_time_total = time.perf_counter()
+
+    nmin = 20
+    minleaf = 5
+    x,y = tree.load_dataset_txt('pima.txt')
+    nfeat = len(x[0])
+    m = 5
+    
+    start_time_grow = time.perf_counter()
+
+    roots = tree.tree_grow_b(x, y, nmin, minleaf, nfeat, m)
+
+    end_time_total = time.perf_counter()
+
+    if printing:
+        for i in range(len(roots)):
+            print(" ")
+            print("Tree number",i)
+            tree.traverse(roots[i])
+
+    print("growing time:", end_time_total - start_time_grow)
+    print("total time:", end_time_total - start_time_total)
+
+    return x,y,roots
+
+def test_tree_pred_b(x,y,roots, printing = False):
+    predictions = tree.tree_pred_b(x,trees=roots)
+    matrix = tree.confusion_matrix(x,y,predictions)
+    print(matrix)
+    
 
 if testing:
-    test_max_impurity()
-    test_gini()
-    test_bestsplit_num()
-    test_bestsplit_cat()
-    test_tree_grow(printing = False)
-    test_tree_pred(printing = True)
+    # test_max_impurity()
+    # test_gini()
+    # test_bestsplit_num()
+    # test_bestsplit_cat()
+    # test_tree_grow(printing = False)
+    # test_tree_pred(printing = False)
+    x,y,roots = test_tree_grow_b(printing = False)
+    test_tree_pred_b(x=x,y=y,roots=roots, printing = True)
