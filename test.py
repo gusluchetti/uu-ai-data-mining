@@ -82,23 +82,11 @@ def test_tree_pred(printing = False):
     confusion_matrix = np.zeros((2,2))
 
     predictions = tree.tree_pred(x, root)
-    for i in range(len(x)):
-        
-        if predictions[i] == 0:
-            if predictions[i] == y[i]:
-                confusion_matrix[0][0] += 1
-            else:
-                confusion_matrix[1][0] += 1
-        else:
-            if predictions[i] == y[i]:
-                confusion_matrix[1][1] += 1
-            else:
-                confusion_matrix[0][1] += 1
-        
-        # you can technically write it like this in one line but it would be unreadable:
-        #  confusion_matrix[int(predictions[i]==y[i])][predictions[i]] += 1
+
+    matrix = tree.confusion_matrix(x,y,predictions)
+
     if printing:
-        print(confusion_matrix)
+        print(matrix)
         
 
 if testing:
