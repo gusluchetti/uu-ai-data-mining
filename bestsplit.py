@@ -3,6 +3,7 @@ from math import pow
 from gini import gini_impurity, get_max_impurity
 from itertools import combinations
 
+printing_mode = False
 
 # TODO: any way of getting the setup for both best splits into functions?
 def get_impr_red(left, right, max_impr):
@@ -11,7 +12,10 @@ def get_impr_red(left, right, max_impr):
     gini_right = gini_impurity(right)
     freq_l = len(left)/(len(left)+len(right))
     freq_r = 1 - freq_l
-    print(gini_left, gini_right, freq_l, freq_r)
+    
+    if printing_mode:
+        print(gini_left, gini_right, freq_l, freq_r)
+        
     return max_impr - ((freq_l*gini_left) + ((freq_r)*gini_right))
 
 
@@ -24,19 +28,23 @@ def get_bestsplit(x, y):
     x_splitpoints = (
         x_sorted[0:(len(x)-3)] + x_sorted[1:(len(x)-2)]
     )/2
-    print(f"Splitpoints -> {x_splitpoints}")
+    if printing_mode:
+        print(f"Splitpoints -> {x_splitpoints}")
 
     for split in x_splitpoints:
-        print(f"Split -> {split}")
+        if printing_mode:
+            print(f"Split -> {split}")
         left, right = y[x < split], y[x >= split]
 
         impr_red = get_impr_red(left, right, max_impr)
-        print(f"Cur. Impurity Reduction = {impr_red}\n")
+        if printing_mode:
+            print(f"Cur. Impurity Reduction = {impr_red}\n")
 
         if impr_red > best_red:
             best_red = impr_red
             best_split = split
-        print(f"Best split {best_split} has {best_red} impurity reduction\n")
+        if printing_mode:
+            print(f"Best split {best_split} has {best_red} impurity reduction\n")
 
     return best_split
 
@@ -62,10 +70,12 @@ def get_bestsplit_cat(x, y):
                 break
         if num_splits == 0:
             break
-    print(all_splits)
+    if printing_mode:
+        print(all_splits)
 
     for split in all_splits:
-        print(f"Split -> {split}")
+        if printing_mode:
+            print(f"Split -> {split}")
         left = np.array([])
         right = np.array([])
         for i, a in enumerate(x):
@@ -75,11 +85,13 @@ def get_bestsplit_cat(x, y):
                 right = np.append(right, y[i])
 
         impr_red = get_impr_red(left, right, max_impr)
-        print(f"Cur. Impurity Reduction = {impr_red}\n")
+        if printing_mode:
+            print(f"Cur. Impurity Reduction = {impr_red}\n")
 
         if impr_red > best_red:
             best_red = impr_red
             best_split = split
-        print(f"Best split {best_split} has {best_red} impurity reduction\n")
+        if printing_mode:
+            print(f"Best split {best_split} has {best_red} impurity reduction\n")
 
     return best_split
