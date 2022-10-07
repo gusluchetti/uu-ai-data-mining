@@ -62,10 +62,7 @@ def tree_pred(x, tr) -> list:
     Returns:
         (list) A list of class labels
     """
-    predictions = []
-    for i in x:
-        c = predict(i, tr)
-        predictions.append(c)
+    predictions = [predict(i, tr) for i in x]
     return predictions
 
 def confusion_matrix(x,y,predictions):

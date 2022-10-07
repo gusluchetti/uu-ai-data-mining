@@ -45,8 +45,7 @@ def test_eclipse_1():
 
     # prepare the y column
     y = eclipse_training_data[:, 3]  # the target column
-    for i in range(len(y)):
-        y[i] = 1 if y[i] > 0 else 0
+    y = [1 if y[i] > 0 else 0 for i in range(len(y))]
 
     # grow a single tree
     t1 = tree.tree_grow(x, y, 15, 5, 41)
@@ -61,8 +60,7 @@ def test_eclipse_1():
     x_test = np.hstack((ts_col_pre, ts_col_rest))
 
     y_test = eclipse_testing_data[:, 3]
-    for i in range(len(y_test)):
-        y_test[i] = 1 if y_test[i] > 0 else 0
+    y_test = [1 if y_test[i] > 0 else 0 for i in range(len(y_test))]
 
     # make prediction
     pred1 = tree.tree_pred(x_test, t1)
@@ -103,8 +101,7 @@ def test_eclipse_2(nmin, minleaf, nfeat, m):
 
     # prepare the y column
     y = eclipse_training_data[:, 3]  # the target column
-    for i in range(len(y)):
-        y[i] = 1 if y[i] > 0 else 0
+    y = [1 if y[i] > 0 else 0 for i in range(len(y))]
 
     # grow the trees
     forest = tree.tree_grow_b(x, y, nmin, minleaf, nfeat, m)
@@ -119,8 +116,7 @@ def test_eclipse_2(nmin, minleaf, nfeat, m):
     x_test = np.hstack((ts_col_pre, ts_col_rest))
 
     y_test = eclipse_testing_data[:, 3]
-    for i in range(len(y_test)):
-        y_test[i] = 1 if y_test[i] > 0 else 0
+    y_test = [1 if y_test[i] > 0 else 0 for i in range(len(y_test))]
 
     # make prediction
     pred1 = tree.tree_pred_b(x_test, forest)
