@@ -1,6 +1,6 @@
 import tree
 import numpy as np
-
+import time
 
 def test_pima():
     pima_data = np.genfromtxt('./data/pima.txt', delimiter=',')
@@ -91,7 +91,7 @@ def test_eclipse_1():
     print(f"Recall class 1 = { pred1_tru1 / (pred1_tru1 + pred0_tru1) }")
     print(f"Accuracy = { (pred1_tru1 + pred0_tru0) / len(y_test) }")
 
-def test_eclipse_2():
+def test_eclipse_2(nmin, minleaf, nfeat, m):
     # TRAINING
     eclipse_training_data = np.genfromtxt('./data/eclipse-metrics-packages-2.0.csv', delimiter=';', skip_header=True)
 
@@ -107,7 +107,7 @@ def test_eclipse_2():
         y[i] = 1 if y[i] > 0 else 0
 
     # grow the trees
-    forest = tree.tree_grow_b(x, y, 15, 5, 41, m = 100)
+    forest = tree.tree_grow_b(x, y, nmin, minleaf, nfeat, m)
 
     # TESTING
     eclipse_testing_data = np.genfromtxt('./data/eclipse-metrics-packages-3.0.csv', delimiter=';', skip_header=True)
@@ -148,7 +148,15 @@ def test_eclipse_2():
     print(f"Precision class 1 = { pred1_tru1 / (pred1_tru1 + pred1_tru0) }")
     print(f"Recall class 1 = { pred1_tru1 / (pred1_tru1 + pred0_tru1) }")
     print(f"Accuracy = { (pred1_tru1 + pred0_tru0) / len(y_test) }")
-    
+
 # test_pima()
 #test_eclipse_1()
-test_eclipse_2()
+print("calculating...")
+start_time_total = time.perf_counter()
+
+#test_eclipse_2(nmin = 15, minleaf = 5, nfeat = 41, m = 100)
+
+test_eclipse_2(nmin = 15, minleaf = 5, nfeat = 6, m = 100)
+
+end_time_total = time.perf_counter()
+print("total time:", end_time_total - start_time_total)
