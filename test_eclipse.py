@@ -50,6 +50,21 @@ def test_eclipse_1():
     # grow a single tree
     t1 = tree.tree_grow(x, y, 15, 5, 41)
 
+    '''
+    # Uncomment this section to check the split points & classes of the first 3 leaf nodes
+    print(f"PARENT split col {t1.split_col} split point {t1.split_point}")
+    print("Number of children:", len(t1.children))
+    print("LEFT-1 split col", t1.children[0].split_col, "split point", t1.children[0].split_point)
+    print("RIGHT-1 split col", t1.children[1].split_col, "split point", t1.children[1].split_point)
+
+    t1_left = t1.children[0]
+    print("LEFT-2 split col", t1_left.children[0].split_col, "split point", t1_left.children[0].split_point)
+    print("RIGHT-2 split col", t1_left.children[1].split_col, "split point", t1_left.children[1].split_point)
+    print("LEFT-2 leaf class ==", tree.find_leaf_class(t1_left.children[0].matrix))
+    print("RIGHT-2 left class ==", tree.find_leaf_class(t1_left.children[1].matrix))
+    print("RIGHT-1 left class ==", tree.find_leaf_class(t1.children[1].matrix))
+    '''
+
     # TESTING
     eclipse_testing_data = np.genfromtxt('./data/eclipse-metrics-packages-3.0.csv', delimiter=';', skip_header=True)
 
