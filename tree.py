@@ -5,6 +5,7 @@ import random
 
 printing_mode = False
 
+
 class Node:
     def __init__(self, matrix):
         self.children = []
@@ -21,6 +22,7 @@ def load_dataset_txt(path):
     y = data[:, last]
     
     return x,y
+
 
 def load_dataset_csv(path, y_name):
     df = pd.read_csv(path)
@@ -64,6 +66,7 @@ def tree_pred(x, tr) -> list:
     """
     predictions = [predict(i, tr) for i in x]
     return predictions
+
 
 def tree_grow_b(x, y, nmin, minleaf, nfeat, m) -> list:
     """Creating a list of tree models by using random forests, 
@@ -277,8 +280,7 @@ def calculate_impurity_reduction(y_parent, y_left, y_right) -> float:
     return im_parent - (w_left * im_left) - (w_right * im_right)
 
 
-
-def confusion_matrix(x,y,predictions):
+def confusion_matrix(x, y, predictions):
 
     confusion_matrix = np.zeros((2,2))
 
