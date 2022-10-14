@@ -42,7 +42,7 @@ def test_eclipse_1():
     # prepare the x matrix
     tr_col_pre = eclipse_training_data[:, 2]  # column pre-release bugs
     tr_col_pre = tr_col_pre.reshape(len(eclipse_training_data), 1)
-    tr_col_rest = eclipse_training_data[:, 4:45]  # other columns
+    tr_col_rest = eclipse_training_data[:, 4:44]  # other columns
     x = np.hstack((tr_col_pre, tr_col_rest))  # binding the pre-release column with other columns
 
     # prepare the y column
