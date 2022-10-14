@@ -4,8 +4,8 @@
 
 import numpy as np
 import pandas as pd
-import gini
 import random
+import math
 
 printing_mode = False
 
@@ -111,7 +111,7 @@ def load_dataset_txt(path):
     x = data[:, 0:last]
     y = data[:, last]
 
-    return x,y
+    return x, y
 
 
 def load_dataset_csv(path, y_name):
@@ -123,7 +123,7 @@ def load_dataset_csv(path, y_name):
     y = df[y_name]
     x = df.drop(y_name, axis = 1)
 
-    return x,y
+    return x, y
 
 
 def split(node, nmin, minleaf, nfeat):
@@ -133,7 +133,11 @@ def split(node, nmin, minleaf, nfeat):
         node.leaf_class = find_leaf_class(node.matrix)
     else:
         # attempt splitting
-        split_col, split_pt, split_left, split_right = find_best_split(node.matrix, nfeat, minleaf)
+        split_col, split_pt, split_left, split_right = find_best_split(
+            node.matrix,
+            nfeat,
+            minleaf
+        )
 
         if split_col is not None:
             # a valid split is found
@@ -189,15 +193,16 @@ def create_bootstrap_samples(matrix, m):
 
 
 def find_best_split(matrix, nfeat, minleaf=1):
-    """Iterates over the attributes and instances in the training data. Each time performs a binary split
-    and calculates the impurity reduction.
+    """Iterates over the attributes and instances in the training data.
+    Each time performs a binary split and calculates the impurity reduction.
 
     Parameters
-        matrix: (list) 2-dimensional numerical array. The last column is the class labels (Y), other columns are the attributes (X).
+        matrix: (list) 2-dimensional numerical array.
+        The last column is the class labels (Y), other columns are the attributes (X).
         minlength: (int) The minimum size of a split.
     Returns
-        The best left and right split. Both are 2-dimensional subset arrays of the input data.
-        Or None if no binary split that fits the criteria is found.
+        The best left and right split. Both are 2-dimensional subset arrays of
+        the input data. Or None if no binary split that fits the criteria is found.
     """
     unsplit = np.array(matrix)
     attr_cols = []
@@ -281,9 +286,9 @@ def calculate_impurity_reduction(y_parent, y_left, y_right) -> float:
     Returns
         (float) Amount of impurity reduction
     """
-    im_parent = gini.gini_impurity(y_parent)
-    im_left = gini.gini_impurity(y_left)
-    im_right = gini.gini_impurity(y_right)
+    im_parent = gini_impurity(y_parent)
+    im_left = gini_impurity(y_left)
+    im_right = gini_impurity(y_right)
     w_left = len(y_left) / len(y_parent)
     w_right = len(y_right) / len(y_parent)
     return im_parent - (w_left * im_left) - (w_right * im_right)
@@ -305,3 +310,47 @@ def confusion_matrix(x, y, predictions):
                 confusion_matrix[0][1] += 1
 
     return confusion_matrix
+
+
+def get_max_impurity(array):
+    # max possible impurity is related to the number of unique classes/values
+    length = len(array)
+    return 1-length*(math.pow(1/length, 2))
+
+
+def gini_impurity(array):  # 1 - sum (p)^2
+    """Gini impurity to handle separation between a number N of different classes
+    Parameters
+        np array of N classes
+    Returns
+        weighted gini_index of node
+    """
+    # Classes could either be numbers or chars!
+    printing_mode = False
+
+    if printing_mode:
+        print(f"Node being evaluated -> {array}")
+    length = len(array)
+    uniques = np.unique(array)
+
+    if printing_mode:
+        print(f"Classes -> {uniques}")
+    freqs = np.array([])
+    for label in uniques:
+        count = np.where(array == label)[0].size
+        freq_p = count/length
+        freqs = np.append(freqs, [freq_p])
+
+    if printing_mode:
+        print(f"Freq. for each class -> {freqs}")
+
+    sum = 0
+    for freq in freqs:
+        sum += math.pow(freq, 2)
+    gini = 1 - sum
+    if freqs[0] == 1:  # for single element nodes
+        gini = 0.0
+
+    if printing_mode:
+        print(f"Gini = {gini}\n")
+    return gini
