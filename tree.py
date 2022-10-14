@@ -1,3 +1,7 @@
+# Albertus, Alvin - 2928175
+# Luchetti, Gustavo Luis - 9871969
+# Mahhov, Peter - 4717708
+
 import numpy as np
 import pandas as pd
 import gini
@@ -13,26 +17,6 @@ class Node:
         self.split_col = None
         self.split_point = None
         self.leaf_class = None
-
-
-def load_dataset_txt(path):
-    data = np.genfromtxt(path, delimiter=',', skip_header=False)
-    last = len(data[0]) - 1
-    x = data[:, 0:last]
-    y = data[:, last]
-    
-    return x,y
-
-
-def load_dataset_csv(path, y_name):
-    df = pd.read_csv(path)
-    if printing_mode:
-        print(f"Loaded dataframe.\n {df.info()}\n")
-        
-    y = df[y_name]
-    x = df.drop(y_name, axis = 1)
-    
-    return x,y
 
 
 def tree_grow(x, y, nmin, minleaf, nfeat) -> Node:
@@ -69,7 +53,7 @@ def tree_pred(x, tr) -> list:
 
 
 def tree_grow_b(x, y, nmin, minleaf, nfeat, m) -> list:
-    """Creating a list of tree models by using random forests, 
+    """Creating a list of tree models by using random forests
     based on the training data as input
 
     Parameters
@@ -95,7 +79,7 @@ def tree_grow_b(x, y, nmin, minleaf, nfeat, m) -> list:
     return roots
 
 
-def tree_pred_b(x, trees):
+def tree_pred_b(x, trees) -> list:
     """Predicting the classes of every observation in the input x
 
     Parameters
@@ -103,7 +87,7 @@ def tree_pred_b(x, trees):
         trees (list): A list of the root nodes of the tree models used
     Returns:
         (list) A list of class labels
-    """    
+    """
     predictions = []
 
     for i in x:
@@ -113,10 +97,31 @@ def tree_pred_b(x, trees):
 
         # find the most voted
         vals, occs = np.unique(votes, return_counts=True)
-        dic = {o:v for o, v in zip(occs, vals)}
+        dic = {o: v for o, v in zip(occs, vals)}
         predictions.append(dic[occs.max()])
 
     return predictions
+
+
+# extra functions
+def load_dataset_txt(path):
+    data = np.genfromtxt(path, delimiter=',', skip_header=False)
+    last = len(data[0]) - 1
+    x = data[:, 0:last]
+    y = data[:, last]
+
+    return x,y
+
+
+def load_dataset_csv(path, y_name):
+    df = pd.read_csv(path)
+    if printing_mode:
+        print(f"Loaded dataframe.\n {df.info()}\n")
+
+    y = df[y_name]
+    x = df.drop(y_name, axis = 1)
+
+    return x,y
 
 
 def split(node, nmin, minleaf, nfeat):
