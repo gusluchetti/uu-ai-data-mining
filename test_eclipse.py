@@ -99,7 +99,7 @@ def test_eclipse_1():
             pred1_tru1 += 1
 
     print(f"Predicted 0 - Truth 0 = {pred0_tru0} \nPredicted 0 - Truth 1 = {pred0_tru1}")
-    # print(f"Predicted 1 - Truth 0 = {pred1_tru0} \nPredicted 1 - Truth 1 = {pred1_tru1}")
+    print(f"Predicted 1 - Truth 0 = {pred1_tru0} \nPredicted 1 - Truth 1 = {pred1_tru1}\n")
     # print(f"Precision class 0 = { pred0_tru0 / (pred0_tru0 + pred0_tru1) }")
     # print(f"Recall class 0 = { pred0_tru0 / (pred0_tru0 + pred1_tru0) }")
     print(f"Precision class = { pred1_tru1 / (pred1_tru1 + pred1_tru0) }")
@@ -157,22 +157,23 @@ def test_eclipse_2(nmin, minleaf, nfeat, m):
 
     print(f"Predicted 0 - Truth 0 = {pred0_tru0} \nPredicted 0 - Truth 1 = {pred0_tru1}")
     print(f"Predicted 1 - Truth 0 = {pred1_tru0} \nPredicted 1 - Truth 1 = {pred1_tru1}")
-    print(f"Precision class 0 = { pred0_tru0 / (pred0_tru0 + pred0_tru1) }")
-    print(f"Recall class 0 = { pred0_tru0 / (pred0_tru0 + pred1_tru0) }")
-    print(f"Precision class 1 = { pred1_tru1 / (pred1_tru1 + pred1_tru0) }")
-    print(f"Recall class 1 = { pred1_tru1 / (pred1_tru1 + pred0_tru1) }")
+    # print(f"Precision class 0 = { pred0_tru0 / (pred0_tru0 + pred0_tru1) }")
+    # print(f"Recall class 0 = { pred0_tru0 / (pred0_tru0 + pred1_tru0) }")
+    print(f"Precision class = { pred1_tru1 / (pred1_tru1 + pred1_tru0) }")
+    print(f"Recall class = { pred1_tru1 / (pred1_tru1 + pred0_tru1) }")
     print(f"Accuracy = { (pred1_tru1 + pred0_tru0) / len(y_test) }")
 
 
-# test_pima()
-# test_eclipse_1()
 print("calculating...")
 start_time_total = time.perf_counter()
 
-print("testing single tree:")
+# print("testing pima")
+# test_pima()
+
+print("testing single tree")
 test_eclipse_1()
 
-# print("testing bagging:")
+# print("testing bagging")
 # test_eclipse_2(nmin = 15, minleaf = 5, nfeat = 41, m = 100)
 
 # print("testing random forests:")
