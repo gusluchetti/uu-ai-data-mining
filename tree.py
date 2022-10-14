@@ -105,6 +105,7 @@ def tree_pred_b(x, trees) -> list:
 
 # extra functions
 def load_dataset_txt(path):
+    """Loading dataset from file path of text file"""
     data = np.genfromtxt(path, delimiter=',', skip_header=False)
     last = len(data[0]) - 1
     x = data[:, 0:last]
@@ -114,6 +115,7 @@ def load_dataset_txt(path):
 
 
 def load_dataset_csv(path, y_name):
+    """Loading dataset from file path of csv file"""
     df = pd.read_csv(path)
     if printing_mode:
         print(f"Loaded dataframe.\n {df.info()}\n")
@@ -125,6 +127,7 @@ def load_dataset_csv(path, y_name):
 
 
 def split(node, nmin, minleaf, nfeat):
+    """Finding the best split"""
     if len(node.matrix) < nmin or len(node.matrix) < minleaf:
         # leaf node is reached
         node.leaf_class = find_leaf_class(node.matrix)
@@ -149,6 +152,7 @@ def split(node, nmin, minleaf, nfeat):
 
 
 def predict(instance, node):
+    """Predicting the classes of every observation in the input x"""
     if node.leaf_class is not None:
         return int(node.leaf_class)
     elif instance[node.split_col] <= node.split_point:
@@ -158,9 +162,9 @@ def predict(instance, node):
 
 
 def traverse(node):
-    print(f"============== NODE")
-    
-    if node.leaf_class == None:    
+    """Node traversal/print helper function"""
+    print("============== NODE")
+    if node.leaf_class is None:
         print(f"Split column {node.split_col}")
         print(f"Split point {node.split_point}")
     else:
@@ -263,7 +267,7 @@ def find_leaf_class(matrix):
     mat = np.array(matrix)
     vals, occurrences = np.unique(mat[:, len(mat[0])-1], return_counts=True)
     # dic = dict(zip(occurrences, vals))
-    dic = { o: v for o, v in zip(occurrences, vals) }
+    dic = {o: v for o, v in zip(occurrences, vals)}
     return dic[occurrences.max()]
 
 
@@ -286,11 +290,9 @@ def calculate_impurity_reduction(y_parent, y_left, y_right) -> float:
 
 
 def confusion_matrix(x, y, predictions):
-
-    confusion_matrix = np.zeros((2,2))
-
+    """Setting up confusion matrix"""
+    confusion_matrix = np.zeros((2, 2))
     for i in range(len(x)):
-        
         if predictions[i] == 0:
             if predictions[i] == y[i]:
                 confusion_matrix[0][0] += 1
