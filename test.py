@@ -3,6 +3,9 @@ import gini
 import tree
 import numpy as np
 import time
+import os
+from pathlib import Path
+
 
 testing = True
 
@@ -56,9 +59,9 @@ def test_tree_grow(printing=True):
     nmin = 2
     minleaf = 1
     nfeat = 5
-
     start_time = time.perf_counter()
-    x, y = tree.load_dataset_txt('../data/credit.txt')
+    path = os.path.dirname(os.path.abspath(__file__))
+    x, y = tree.load_dataset_txt(f'{path}/data/credit.txt')
     root = tree.tree_grow(x, y, nmin, minleaf, nfeat)
 
     end_time = time.perf_counter()
@@ -70,29 +73,21 @@ def test_tree_grow(printing=True):
     if printing:
         print(grow_time)
 
-    # print("     ")
-    # x,y = tree.load_dataset_csv('data.csv',y_name='class')
-    # root = tree.tree_grow(x, y, nmin, minleaf, nfeat)
-    # if printing:
-    #     tree.traverse(root)
-
 
 def test_tree_pred(printing=False):
     nmin = 20
     minleaf = 5
     start_time_total = time.perf_counter()
 
-    x, y = tree.load_dataset_txt('.../data/pima.txt')
+    path = os.path.dirname(os.path.abspath(__file__))
+    x, y = tree.load_dataset_txt(f'{path}/data/pima.txt')
     nfeat = len(x[0])
 
     start_time_grow = time.perf_counter()
     root = tree.tree_grow(x, y, nmin, minleaf, nfeat)
     # tree.traverse(root)
     end_time_grow = time.perf_counter()
-    confusion_matrix = np.zeros((2, 2))
-
     predictions = tree.tree_pred(x, root)
-
     matrix = tree.confusion_matrix(x, y, predictions)
 
     assert matrix[0][0] < 454
@@ -116,7 +111,8 @@ def test_tree_grow_b(printing=False):
     start_time_total = time.perf_counter()
     nmin = 20
     minleaf = 5
-    x, y = tree.load_dataset_txt('../data/pima.txt')
+    path = os.path.dirname(os.path.abspath(__file__))
+    x, y = tree.load_dataset_txt(f'{path}/data/pima.txt')
     nfeat = len(x[0])
     m = 5
     start_time_grow = time.perf_counter()
