@@ -165,9 +165,11 @@ def test_eclipse_2(nmin, minleaf, nfeat, m):
 print("calculating...")
 start_time_total = time.perf_counter()
 
+test_eclipse_1()
+
 #test_eclipse_2(nmin = 15, minleaf = 5, nfeat = 41, m = 100)
 
-test_eclipse_2(nmin = 15, minleaf = 5, nfeat = 6, m = 100)
+#test_eclipse_2(nmin = 15, minleaf = 5, nfeat = 6, m = 100)
 
 end_time_total = time.perf_counter()
 print("total time:", end_time_total - start_time_total)

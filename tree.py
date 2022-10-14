@@ -65,26 +65,6 @@ def tree_pred(x, tr) -> list:
     predictions = [predict(i, tr) for i in x]
     return predictions
 
-def confusion_matrix(x,y,predictions):
-
-    confusion_matrix = np.zeros((2,2))
-
-    for i in range(len(x)):
-        
-        if predictions[i] == 0:
-            if predictions[i] == y[i]:
-                confusion_matrix[0][0] += 1
-            else:
-                confusion_matrix[1][0] += 1
-        else:
-            if predictions[i] == y[i]:
-                confusion_matrix[1][1] += 1
-            else:
-                confusion_matrix[0][1] += 1
-
-    return confusion_matrix
-    
-
 def tree_grow_b(x, y, nmin, minleaf, nfeat, m) -> list:
     _y = np.array(y).reshape(len(x), 1)
     matrix = np.hstack((x, _y))
@@ -274,3 +254,24 @@ def calculate_impurity_reduction(y_parent, y_left, y_right) -> float:
     w_left = len(y_left) / len(y_parent)
     w_right = len(y_right) / len(y_parent)
     return im_parent - (w_left * im_left) - (w_right * im_right)
+
+
+
+def confusion_matrix(x,y,predictions):
+
+    confusion_matrix = np.zeros((2,2))
+
+    for i in range(len(x)):
+        
+        if predictions[i] == 0:
+            if predictions[i] == y[i]:
+                confusion_matrix[0][0] += 1
+            else:
+                confusion_matrix[1][0] += 1
+        else:
+            if predictions[i] == y[i]:
+                confusion_matrix[1][1] += 1
+            else:
+                confusion_matrix[0][1] += 1
+
+    return confusion_matrix
