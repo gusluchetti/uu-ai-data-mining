@@ -6,6 +6,7 @@ import time
 
 testing = True
 
+
 def test_max_impurity():
     # asserting odd char array with max impurity
     array = np.array(['A', 'B', 'C'])
@@ -50,53 +51,49 @@ def test_bestsplit_cat():
     assert bestsplit.get_bestsplit_cat(x, y) == expected_best
 
 
-def test_tree_grow(printing = True):
+def test_tree_grow(printing=True):
     # validate tree with credit data
     nmin = 2
     minleaf = 1
     nfeat = 5
 
     start_time = time.perf_counter()
-   
-    x,y = tree.load_dataset_txt('credit.txt')
+    x, y = tree.load_dataset_txt('../data/credit.txt')
     root = tree.tree_grow(x, y, nmin, minleaf, nfeat)
-    
-    end_time = time.perf_counter()
 
+    end_time = time.perf_counter()
     if printing:
         tree.traverse(root)
-    
+
     grow_time = end_time - start_time
-    
+
     if printing:
         print(grow_time)
-    
+
     # print("     ")
-   
     # x,y = tree.load_dataset_csv('data.csv',y_name='class')
     # root = tree.tree_grow(x, y, nmin, minleaf, nfeat)
     # if printing:
     #     tree.traverse(root)
-    
-def test_tree_pred(printing = False):
+
+
+def test_tree_pred(printing=False):
     nmin = 20
     minleaf = 5
-    
     start_time_total = time.perf_counter()
 
-    x,y = tree.load_dataset_txt('pima.txt')
+    x, y = tree.load_dataset_txt('.../data/pima.txt')
     nfeat = len(x[0])
 
     start_time_grow = time.perf_counter()
     root = tree.tree_grow(x, y, nmin, minleaf, nfeat)
     # tree.traverse(root)
     end_time_grow = time.perf_counter()
-    
-    confusion_matrix = np.zeros((2,2))
+    confusion_matrix = np.zeros((2, 2))
 
     predictions = tree.tree_pred(x, root)
 
-    matrix = tree.confusion_matrix(x,y,predictions)
+    matrix = tree.confusion_matrix(x, y, predictions)
 
     assert matrix[0][0] < 454
     assert matrix[0][0] > 434
@@ -111,19 +108,17 @@ def test_tree_pred(printing = False):
 
     if printing:
         print(matrix)
-        print("grow time:",end_time_grow-start_time_grow)
-        print("total time:",end_time_total - start_time_total)
+        print("grow time:", end_time_grow-start_time_grow)
+        print("total time:", end_time_total - start_time_total)
 
-def test_tree_grow_b(printing = False):
 
+def test_tree_grow_b(printing=False):
     start_time_total = time.perf_counter()
-
     nmin = 20
     minleaf = 5
-    x,y = tree.load_dataset_txt('pima.txt')
+    x, y = tree.load_dataset_txt('../data/pima.txt')
     nfeat = len(x[0])
     m = 5
-    
     start_time_grow = time.perf_counter()
 
     roots = tree.tree_grow_b(x, y, nmin, minleaf, nfeat, m)
@@ -133,19 +128,20 @@ def test_tree_grow_b(printing = False):
     if printing:
         for i in range(len(roots)):
             print(" ")
-            print("Tree number",i)
+            print("Tree number", i)
             tree.traverse(roots[i])
 
     print("growing time:", end_time_total - start_time_grow)
     print("total time:", end_time_total - start_time_total)
 
-    return x,y,roots
+    return x, y, roots
 
-def test_tree_pred_b(x,y,roots, printing = False):
-    predictions = tree.tree_pred_b(x,trees=roots)
-    matrix = tree.confusion_matrix(x,y,predictions)
+
+def test_tree_pred_b(x, y, roots, printing=False):
+    predictions = tree.tree_pred_b(x, trees=roots)
+    matrix = tree.confusion_matrix(x, y, predictions)
     print(matrix)
-    
+
 
 if testing:
     # test_max_impurity()
@@ -154,5 +150,5 @@ if testing:
     # test_bestsplit_cat()
     # test_tree_grow(printing = False)
     # test_tree_pred(printing = False)
-    x,y,roots = test_tree_grow_b(printing = False)
-    test_tree_pred_b(x=x,y=y,roots=roots, printing = True)
+    x, y, roots = test_tree_grow_b(printing=False)
+    test_tree_pred_b(x=x, y=y, roots=roots, printing=True)
