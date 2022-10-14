@@ -54,7 +54,7 @@ def tree_grow(x, y, nmin, minleaf, nfeat) -> Node:
 
 
 def tree_pred(x, tr) -> list:
-    """Predicting the classes of every observations in the input x
+    """Predicting the classes of every observation in the input x
 
     Parameters
         x (list): 2-dimensional array of numerical values
@@ -66,6 +66,19 @@ def tree_pred(x, tr) -> list:
     return predictions
 
 def tree_grow_b(x, y, nmin, minleaf, nfeat, m) -> list:
+    """Creating a list of tree models by using random forests, 
+    based on the training data as input
+
+    Parameters
+        list x: 2-dimensional array of numerical values
+        list y: 1-dimensional array of class labels (binary, 0 or 1)
+        int nmin: minimum number of observations in a node to be split
+        int minleaf: minimum number of observations in a leaf-node
+        int nfeat: number of features to be considered for each split
+        int m: total number of trees to be generated
+    Returns
+        (list) A list of the root nodes of the generated classification trees
+    """
     _y = np.array(y).reshape(len(x), 1)
     matrix = np.hstack((x, _y))
     samples = create_bootstrap_samples(matrix, m)
@@ -80,6 +93,14 @@ def tree_grow_b(x, y, nmin, minleaf, nfeat, m) -> list:
 
 
 def tree_pred_b(x, trees):
+    """Predicting the classes of every observation in the input x
+
+    Parameters
+        x (list): 2-dimensional array of numerical values
+        trees (list): A list of the root nodes of the tree models used
+    Returns:
+        (list) A list of class labels
+    """    
     predictions = []
 
     for i in x:

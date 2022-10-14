@@ -2,6 +2,8 @@ import tree
 import numpy as np
 import time
 
+
+# testing our code using the Pima indians data
 def test_pima():
     pima_data = np.genfromtxt('./data/pima.txt', delimiter=',')
     x = pima_data[:, :8]
