@@ -1,9 +1,14 @@
+# Albertus, Alvin - 2928175
+# Luchetti, Gustavo Luis - 9871969
+# Mahhov, Peter - 4717708
+
 import numpy as np
 import pandas as pd
-import gini
 import random
+import math
 
 printing_mode = False
+
 
 class Node:
     def __init__(self, matrix):
@@ -12,25 +17,6 @@ class Node:
         self.split_col = None
         self.split_point = None
         self.leaf_class = None
-
-
-def load_dataset_txt(path):
-    data = np.genfromtxt(path, delimiter=',', skip_header=False)
-    last = len(data[0]) - 1
-    x = data[:, 0:last]
-    y = data[:, last]
-    
-    return x,y
-
-def load_dataset_csv(path, y_name):
-    df = pd.read_csv(path)
-    if printing_mode:
-        print(f"Loaded dataframe.\n {df.info()}\n")
-        
-    y = df[y_name]
-    x = df.drop(y_name, axis = 1)
-    
-    return x,y
 
 
 def tree_grow(x, y, nmin, minleaf, nfeat) -> Node:
@@ -54,7 +40,7 @@ def tree_grow(x, y, nmin, minleaf, nfeat) -> Node:
 
 
 def tree_pred(x, tr) -> list:
-    """Predicting the classes of every observations in the input x
+    """Predicting the classes of every observation in the input x
 
     Parameters
         x (list): 2-dimensional array of numerical values
@@ -62,33 +48,24 @@ def tree_pred(x, tr) -> list:
     Returns:
         (list) A list of class labels
     """
-    predictions = []
-    for i in x:
-        c = predict(i, tr)
-        predictions.append(c)
+    predictions = [predict(i, tr) for i in x]
     return predictions
 
-def confusion_matrix(x,y,predictions):
-
-    confusion_matrix = np.zeros((2,2))
-
-    for i in range(len(x)):
-        
-        if predictions[i] == 0:
-            if predictions[i] == y[i]:
-                confusion_matrix[0][0] += 1
-            else:
-                confusion_matrix[1][0] += 1
-        else:
-            if predictions[i] == y[i]:
-                confusion_matrix[1][1] += 1
-            else:
-                confusion_matrix[0][1] += 1
-
-    return confusion_matrix
-    
 
 def tree_grow_b(x, y, nmin, minleaf, nfeat, m) -> list:
+    """Creating a list of tree models by using random forests
+    based on the training data as input
+
+    Parameters
+        list x: 2-dimensional array of numerical values
+        list y: 1-dimensional array of class labels (binary, 0 or 1)
+        int nmin: minimum number of observations in a node to be split
+        int minleaf: minimum number of observations in a leaf-node
+        int nfeat: number of features to be considered for each split
+        int m: total number of trees to be generated
+    Returns
+        (list) A list of the root nodes of the generated classification trees
+    """
     _y = np.array(y).reshape(len(x), 1)
     matrix = np.hstack((x, _y))
     samples = create_bootstrap_samples(matrix, m)
@@ -102,7 +79,15 @@ def tree_grow_b(x, y, nmin, minleaf, nfeat, m) -> list:
     return roots
 
 
-def tree_pred_b(x, trees):
+def tree_pred_b(x, trees) -> list:
+    """Predicting the classes of every observation in the input x
+
+    Parameters
+        x (list): 2-dimensional array of numerical values
+        trees (list): A list of the root nodes of the tree models used
+    Returns:
+        (list) A list of class labels
+    """
     predictions = []
 
     for i in x:
@@ -112,19 +97,47 @@ def tree_pred_b(x, trees):
 
         # find the most voted
         vals, occs = np.unique(votes, return_counts=True)
-        dic = {o:v for o, v in zip(occs, vals)}
+        dic = {o: v for o, v in zip(occs, vals)}
         predictions.append(dic[occs.max()])
 
     return predictions
 
 
+# extra functions
+def load_dataset_txt(path):
+    """Loading dataset from file path of text file"""
+    data = np.genfromtxt(path, delimiter=',', skip_header=False)
+    last = len(data[0]) - 1
+    x = data[:, 0:last]
+    y = data[:, last]
+
+    return x, y
+
+
+def load_dataset_csv(path, y_name):
+    """Loading dataset from file path of csv file"""
+    df = pd.read_csv(path)
+    if printing_mode:
+        print(f"Loaded dataframe.\n {df.info()}\n")
+
+    y = df[y_name]
+    x = df.drop(y_name, axis = 1)
+
+    return x, y
+
+
 def split(node, nmin, minleaf, nfeat):
+    """Finding the best split"""
     if len(node.matrix) < nmin or len(node.matrix) < minleaf:
         # leaf node is reached
         node.leaf_class = find_leaf_class(node.matrix)
     else:
         # attempt splitting
-        split_col, split_pt, split_left, split_right = find_best_split(node.matrix, nfeat, minleaf)
+        split_col, split_pt, split_left, split_right = find_best_split(
+            node.matrix,
+            nfeat,
+            minleaf
+        )
 
         if split_col is not None:
             # a valid split is found
@@ -143,6 +156,7 @@ def split(node, nmin, minleaf, nfeat):
 
 
 def predict(instance, node):
+    """Predicting the classes of every observation in the input x"""
     if node.leaf_class is not None:
         return int(node.leaf_class)
     elif instance[node.split_col] <= node.split_point:
@@ -152,9 +166,9 @@ def predict(instance, node):
 
 
 def traverse(node):
-    print(f"============== NODE")
-    
-    if node.leaf_class == None:    
+    """Node traversal/print helper function"""
+    print("============== NODE")
+    if node.leaf_class is None:
         print(f"Split column {node.split_col}")
         print(f"Split point {node.split_point}")
     else:
@@ -179,15 +193,16 @@ def create_bootstrap_samples(matrix, m):
 
 
 def find_best_split(matrix, nfeat, minleaf=1):
-    """Iterates over the attributes and instances in the training data. Each time performs a binary split
-    and calculates the impurity reduction.
+    """Iterates over the attributes and instances in the training data.
+    Each time performs a binary split and calculates the impurity reduction.
 
     Parameters
-        matrix: (list) 2-dimensional numerical array. The last column is the class labels (Y), other columns are the attributes (X).
+        matrix: (list) 2-dimensional numerical array.
+        The last column is the class labels (Y), other columns are the attributes (X).
         minlength: (int) The minimum size of a split.
     Returns
-        The best left and right split. Both are 2-dimensional subset arrays of the input data.
-        Or None if no binary split that fits the criteria is found.
+        The best left and right split. Both are 2-dimensional subset arrays of
+        the input data. Or None if no binary split that fits the criteria is found.
     """
     unsplit = np.array(matrix)
     attr_cols = []
@@ -257,7 +272,7 @@ def find_leaf_class(matrix):
     mat = np.array(matrix)
     vals, occurrences = np.unique(mat[:, len(mat[0])-1], return_counts=True)
     # dic = dict(zip(occurrences, vals))
-    dic = { o: v for o, v in zip(occurrences, vals) }
+    dic = {o: v for o, v in zip(occurrences, vals)}
     return dic[occurrences.max()]
 
 
@@ -271,9 +286,71 @@ def calculate_impurity_reduction(y_parent, y_left, y_right) -> float:
     Returns
         (float) Amount of impurity reduction
     """
-    im_parent = gini.gini_impurity(y_parent)
-    im_left = gini.gini_impurity(y_left)
-    im_right = gini.gini_impurity(y_right)
+    im_parent = gini_impurity(y_parent)
+    im_left = gini_impurity(y_left)
+    im_right = gini_impurity(y_right)
     w_left = len(y_left) / len(y_parent)
     w_right = len(y_right) / len(y_parent)
     return im_parent - (w_left * im_left) - (w_right * im_right)
+
+
+def confusion_matrix(x, y, predictions):
+    """Setting up confusion matrix"""
+    confusion_matrix = np.zeros((2, 2))
+    for i in range(len(x)):
+        if predictions[i] == 0:
+            if predictions[i] == y[i]:
+                confusion_matrix[0][0] += 1
+            else:
+                confusion_matrix[1][0] += 1
+        else:
+            if predictions[i] == y[i]:
+                confusion_matrix[1][1] += 1
+            else:
+                confusion_matrix[0][1] += 1
+
+    return confusion_matrix
+
+
+def get_max_impurity(array):
+    # max possible impurity is related to the number of unique classes/values
+    length = len(array)
+    return 1-length*(math.pow(1/length, 2))
+
+
+def gini_impurity(array):  # 1 - sum (p)^2
+    """Gini impurity to handle separation between a number N of different classes
+    Parameters
+        np array of N classes
+    Returns
+        weighted gini_index of node
+    """
+    # Classes could either be numbers or chars!
+    printing_mode = False
+
+    if printing_mode:
+        print(f"Node being evaluated -> {array}")
+    length = len(array)
+    uniques = np.unique(array)
+
+    if printing_mode:
+        print(f"Classes -> {uniques}")
+    freqs = np.array([])
+    for label in uniques:
+        count = np.where(array == label)[0].size
+        freq_p = count/length
+        freqs = np.append(freqs, [freq_p])
+
+    if printing_mode:
+        print(f"Freq. for each class -> {freqs}")
+
+    sum = 0
+    for freq in freqs:
+        sum += math.pow(freq, 2)
+    gini = 1 - sum
+    if freqs[0] == 1:  # for single element nodes
+        gini = 0.0
+
+    if printing_mode:
+        print(f"Gini = {gini}\n")
+    return gini
