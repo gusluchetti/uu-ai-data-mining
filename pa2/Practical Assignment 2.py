@@ -69,7 +69,7 @@ sorted_counts = counts.sum().sort_values(ascending=False)
 print(sorted_counts)
 
 
-# In[32]:
+# In[6]:
 
 
 import seaborn as sns
